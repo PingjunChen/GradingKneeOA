@@ -1,0 +1,21 @@
+# Folders
+data/
+Data/
+DATA/
+.env/
+env/
+ENV/
+__pycache__/
+
+
+# Files
+
+
+# Files of certain surfix
+*.h5
+*.pkl
+*.py[cod]
+*.so
+*.log
+*~
+.python-version

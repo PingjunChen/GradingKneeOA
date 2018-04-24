@@ -7,7 +7,8 @@ import shutil
 def extract_knee_xray(root_dir, excel_file, dst_dir):
     excel_path = os.path.join(root_dir, excel_file)
     df24m = pd.read_csv(excel_path)
-    df_knee = df24m[df24m["SeriesDescription"] == "Bilateral PA Fixed Flexion Knee"]
+    df_knee = df24m[df24m["SeriesDescription"] == "Bilateral PA Fixed Flexion Knee "]
+    # pdb.set_trace()
 
     xray_dirs = df_knee.Folder.values.tolist()
     xray_ids = df_knee.ParticipantID.values.tolist()
@@ -28,8 +29,8 @@ def extract_knee_xray(root_dir, excel_file, dst_dir):
 
 
 if __name__ == "__main__":
-    root_dir = "E:\\OAI\\24m\\24m"
+    root_dir = "/media/pingjun/lab_drive_SG/OAI/Xrays/96m"
     excel_file = "contents.csv"
-    dst_dir = "E:\\OAI\\24m\\KneeXrays"
+    dst_dir = "/media/pingjun/PingjunLab/KneeData/OAI/Xray/96m"
 
     extract_knee_xray(root_dir, excel_file, dst_dir)
