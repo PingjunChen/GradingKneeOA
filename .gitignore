@@ -9,7 +9,7 @@ __pycache__/
 
 
 # Files
-
+data
 
 # Files of certain surfix
 *.h5
