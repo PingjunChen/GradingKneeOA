@@ -24,9 +24,6 @@ def batch_parse(img_dir, annotation_dir, img_surfix='.png', annotate_surfix='_gt
                      if annotation.endswith(annotate_surfix)]
     assert len(img_list) == len(annotate_list), "Annotation not match with image"
     for cur_img in img_list:
-
-
-        pdb.set_trace()
         cur_annotate = os.path.splitext(cur_img)[0] + annotate_surfix
         bound_boxes = parse_region_mat(os.path.join(annotation_dir, cur_annotate))
 
@@ -46,7 +43,7 @@ def batch_parse(img_dir, annotation_dir, img_surfix='.png', annotate_surfix='_gt
 
 
 if __name__ == '__main__':
-    img_dir = '/media/pingjun/PingjunOAI/OAIdata/KneeJointsAnnotation/KneeAggregation'
-    annotation_dir = '/media/pingjun/PingjunOAI/OAIdata/KneeJointsAnnotation/KneeAggregation'
+    img_dir = '../../../data/DetKnee/img_annotations'
+    annotation_dir = '../../../data/DetKnee/img_annotations'
 
     batch_parse(img_dir, annotation_dir, img_surfix='.png')

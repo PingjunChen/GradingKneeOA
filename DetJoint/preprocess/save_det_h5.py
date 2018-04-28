@@ -22,7 +22,8 @@ def load_mat(thismatfile, contourname_list=['Contours']):
         mat_file = h5py.File(thismatfile, 'r')
         for contourname in contourname_list:
             if contourname in list(mat_file.keys()):
-                contour_mat = [np.transpose(mat_file[element[0]][:]) for element in mat_file[contourname]]
+                contour_mat = [np.transpose(mat_file[element[0]][:])
+                               for element in mat_file[contourname]]
                 break
         mat_file.close()
     except:
@@ -62,10 +63,9 @@ def resize_mat(contour_mat, resize_ratio):
     return res_contour
 
 
-def save_h5(data_root, mode, ratio=0.125):
-    mode_mapping = {"training": "train", "validation": "val", "testing": "test"}
+def save_h5(data_root, h5_dir, mode, ratio=0.125):
     all_dict_list  = getfileinfo(os.path.join(data_root, mode), ['_gt'], ['.png'], '.mat')
-    mode_dir = os.path.join(data_root, mode+"H5")
+    mode_dir = os.path.join(data_root, h5_dir, mode+"H5")
     mkdirs(mode_dir, erase=True)
 
     klg_dict = {}
@@ -90,18 +90,7 @@ def save_h5(data_root, mode, ratio=0.125):
         if cur_bbox[0][0] > cur_bbox[1][0]:
             cur_bbox = cur_bbox[::-1]
         resized_bbox = resize_mat(cur_bbox, ratio)
-        # if resized_bbox[0][0] > resized_bbox[1][0]:
-        #     resized_bbox = resized_bbox[::-1]
         classes = [kl_dict[key_r], kl_dict[key_l]]
-
-        # # Save cropping for training KL classifier
-        # for label, box, name in zip(classes, cur_bbox, (key_r, key_l)):
-        #     start_h, end_h = int(np.ceil(box[1])), int(np.floor(box[3]))
-        #     start_w, end_w = int(np.ceil(box[0])), int(np.floor(box[2]))
-        #     crop_img = cur_img[start_h:end_h,start_w:end_w,:]
-        #     thumb_img = misc.imresize(crop_img, (224, 224))
-        #     thumb_path = os.path.join(data_root, mode_mapping[mode], str(label), name+".png")
-        #     misc.imsave(thumb_path, thumb_img)
 
         info_dict["images"] = resized_img
         info_dict["gt_boxes"] = resized_bbox
@@ -115,9 +104,12 @@ def save_h5(data_root, mode, ratio=0.125):
 
 if __name__ == "__main__":
     np.random.seed(1234)
-    data_root = "../data"
 
-    modes = ["validation", "testing", "training"]
+    knee_data_root = "../../data"
+    data_root = os.path.join(knee_data_root, "DetKnee")
+    h5_dir = "H5"
+
+    modes = ["train", "val", "test"]
     for mode in modes:
         print("Save {} dataset".format(mode))
-        save_h5(data_root, mode)
+        save_h5(data_root, h5_dir, mode)

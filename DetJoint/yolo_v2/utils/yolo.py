@@ -114,19 +114,6 @@ def postprocess_bbox(bbox_pred, iou_pred, prob_pred, im_shape, cfg, thresh=0.05)
     bbox_pred = bbox_pred[keep]
     scores = scores[keep]
     cls_inds = cls_inds[keep]
-    # print scores.shape
-
-    # # NMS
-    # keep = np.zeros(len(bbox_pred), dtype=np.int)
-    # for i in range(num_classes):
-    #     inds = np.where(cls_inds == i)[0]
-    #     if len(inds) == 0:
-    #         continue
-    #     c_bboxes = bbox_pred[inds]
-    #     c_scores = scores[inds]
-    #     c_keep = nms_detections(c_bboxes, c_scores, 0.3)
-    #     keep[inds[c_keep]] = 1
-    # keep = np.where(keep > 0)
 
     keep = nms_detections(bbox_pred, scores, 0.3)
     bbox_pred = bbox_pred[keep]

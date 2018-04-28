@@ -11,19 +11,18 @@ PRJ_PATH = os.path.dirname(os.path.dirname(FILE_PATH))
 sys.path.append(PRJ_PATH)
 
 from yolo_v2.proj_utils.local_utils import mkdirs
-from yolo_v2.cfgs.config_knee import cfg
 from yolo_v2.darknet import Darknet19
+from yolo_v2.cfgs.config_knee import cfg
 from yolo_v2.datasets.knee import Knee
 from yolo_v2.test_yolo import test_eng
 
 
 def set_args():
-    parser = argparse.ArgumentParser(description = 'Testing code for Knee Bone KL prediction')
-    parser.add_argument('--batch-size',      type=int, default=1)
+    parser = argparse.ArgumentParser(description = 'Testing code for Knee bone detection')
     parser.add_argument('--device-id',       type=int, default=1)
-    parser.add_argument('--model-name',      type=str, default="kl-det-1654-0.9952.pth")
-    parser.add_argument('--model-dir',       type=str, default="best_det")
-    # parser.add_argument('--model-name',      type=str, default="")
+    parser.add_argument('--batch-size',      type=int, default=1)
+    parser.add_argument('--model-dir',       type=str, default="best_models")
+    parser.add_argument('--model-name',      type=str, default="kl_detrecog-epoch-00160-0.000297.pth")
     args = parser.parse_args()
 
     return args
@@ -33,16 +32,16 @@ if  __name__ == '__main__':
     args = set_args()
 
     # Setting model, testing data and result path
-    data_root = "../data/"
+    data_root = "../../data/DetKneeData"
     model_root = os.path.join(data_root, args.model_dir)
     save_root =  os.path.join(data_root, "results")
-    # mkdirs(save_root, erase=True)
+    mkdirs(save_root, erase=True)
 
     # Dataloader setting
     input_transform = standard_transforms.Compose([
         standard_transforms.ToTensor(),
-        standard_transforms.Normalize([0.5]*3, [0.5]*3)])
-    dataset = Knee(data_root, "testing", transform=input_transform)
+        standard_transforms.Normalize(cfg.rgb_mean, cfg.rgb_var)])
+    dataset = Knee(data_root, "test", transform=input_transform)
     dataloader = data.DataLoader(dataset, batch_size=args.batch_size)
     # Set Darknet
     net = Darknet19(cfg)

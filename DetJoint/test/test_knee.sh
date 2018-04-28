@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python test_knee.py --device-id 0 --model-dir det_models02 --model-name kl_detrecog-epoch-00185-0.000248.pth
+python test_knee.py --device-id 2 --model-dir best_models --model-name kl_detrecog-epoch-00160-0.000297.pth

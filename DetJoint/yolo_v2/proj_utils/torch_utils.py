@@ -17,7 +17,7 @@ def to_variable(x, requires_grad=True,  var=True,volatile=False):
     x.volatile = volatile
 
     return x
-    
+
 
 def to_device(src, ref, var = True, volatile = False, requires_grad=True):
     requires_grad = requires_grad and (not volatile)
@@ -30,3 +30,14 @@ def set_lr(optimizer, lr):
         param_group['lr'] = lr
 
     return optimizer
+
+
+def tensor_to_img(t_img, mean, std):
+    t_img.squeeze_()
+    for t, m, s in zip(t_img, mean, std):
+        t.mul_(s).add_(m)
+
+    np_img = t_img.numpy().transpose(1, 2, 0)
+    np_img = (np_img * 255.0).astype(np.uint8)
+
+    return np_img

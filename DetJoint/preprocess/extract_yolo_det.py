@@ -6,6 +6,8 @@ import glob
 from skimage import io
 import scipy.misc as misc
 
+# def expand_bbox()
+
 def extract_detected_knees(data_dir, det_dir, results_dir):
     img_list = glob.glob(os.path.join(data_dir, "*.png"))
     for cur_img in img_list:

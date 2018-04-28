@@ -12,9 +12,9 @@ from ..proj_utils.local_utils import overlay_bbox
 class Knee(data.Dataset):
     def __init__(self, data_root, mode, transform=None):
         self.data_root = data_root
-        assert mode in ["training", "validation", "testing"], "Unknown mode: {}".format(mode)
+        assert mode in ["train", "val", "test"], "Unknown mode: {}".format(mode)
         self.mode = mode
-        self.data_path = os.path.join(data_root, mode + "H5")
+        self.data_path = os.path.join(data_root, "H5", mode + "H5")
         self.item_list = glob.glob(os.path.join(self.data_path, "*.h5"))
         self.item_num  = len(self.item_list)
         self.transform = transform
@@ -53,9 +53,6 @@ class Knee(data.Dataset):
     @property
     def num_items(self):
         return self.item_num
-
-    def close(self):
-        pass
 
     def get_all_bbox(self):
         bbox_all = []

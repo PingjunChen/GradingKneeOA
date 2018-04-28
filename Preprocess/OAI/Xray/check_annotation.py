@@ -30,12 +30,13 @@ def check_boxes(mat_filepath):
 
     return True
 
-def check_all_annotations(xrays):
-    filelist = filesystem.find_ext_files(xrays, ".png")
-    matlist = filesystem.find_ext_files(xrays, ".mat")
+def check_all_annotations(xray_path):
+    filelist = filesystem.find_ext_files(xray_path, ".png")
+    matlist = filesystem.find_ext_files(xray_path, ".mat")
     assert len(filelist) == len(matlist), "file and mat not match..."
     print("There are {} files".format(len(filelist)))
 
+    xray_parent_dir = os.path.dirname(xray_path)
     for cur_file in filelist:
         file_dir = os.path.dirname(cur_file)
         file_name = os.path.basename(cur_file)
@@ -48,10 +49,10 @@ def check_all_annotations(xrays):
         box_flag = check_boxes(mat_path)
         if box_flag == False:
             print("{} annotation error...".format(file_name))
-            shutil.move(mat_path, r"C:\KneeXray\ToRevise")
-            shutil.move(cur_file, r"C:\KneeXray\ToRevise")
+            shutil.move(mat_path, os.path.join(xray_parent_dir, "ToRevise"))
+            shutil.move(cur_file, os.path.join(xray_parent_dir, "ToRevise"))
 
 
 if __name__ == '__main__':
-    pingjun_xrays = r"C:\KneeXray\KneeAggregation"
-    check_all_annotations(pingjun_xrays)
+    raw_xrays = "../../../data/DetKnee/img_annotations"
+    check_all_annotations(raw_xrays)
