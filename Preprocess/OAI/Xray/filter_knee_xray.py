@@ -6,8 +6,8 @@ import shutil
 
 def extract_knee_xray(root_dir, excel_file, dst_dir):
     excel_path = os.path.join(root_dir, excel_file)
-    df24m = pd.read_csv(excel_path)
-    df_knee = df24m[df24m["SeriesDescription"] == "Bilateral PA Fixed Flexion Knee "]
+    xray_df = pd.read_csv(excel_path)
+    df_knee = xray_df["Bilateral PA Fixed Flexion Knee" in xray_df["SeriesDescription"]]
     # pdb.set_trace()
 
     xray_dirs = df_knee.Folder.values.tolist()
@@ -22,15 +22,15 @@ def extract_knee_xray(root_dir, excel_file, dst_dir):
         shutil.copy(xray_path, os.path.join(dst_dir, str(pid)+".dcm"))
         if os.path.exists(xray_path):
             count += 1
-        if count % 50 == 0:
+        if count % 100 == 0:
             print("Copy {}/{}".format(count, num_xray))
-
     print("There are {} files in total".format(count))
 
 
 if __name__ == "__main__":
-    root_dir = "/media/pingjun/lab_drive_SG/OAI/Xrays/96m"
+    # root_dir = "/media/pingjun/lab_drive_SG/OAI/Xrays/96m"
+    root_dir = ""
     excel_file = "contents.csv"
-    dst_dir = "/media/pingjun/PingjunLab/KneeData/OAI/Xray/96m"
 
+    dst_dir = "/media/pingjun/PingjunOAI/AnalysisData/XrayLong/96m"
     extract_knee_xray(root_dir, excel_file, dst_dir)

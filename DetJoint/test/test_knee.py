@@ -22,7 +22,7 @@ def set_args():
     parser.add_argument('--device-id',       type=int, default=1)
     parser.add_argument('--batch-size',      type=int, default=1)
     parser.add_argument('--model-dir',       type=str, default="best_models")
-    parser.add_argument('--model-name',      type=str, default="kl_detrecog-epoch-00160-0.000297.pth")
+    parser.add_argument('--model-name',      type=str, default="det-epoch-160-0.000371.pth")
     args = parser.parse_args()
 
     return args

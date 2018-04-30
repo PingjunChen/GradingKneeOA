@@ -63,6 +63,28 @@ class Knee(data.Dataset):
 
         return np.asarray(bbox_all)
 
+    def get_mean_pixel(self):
+        gray_list = np.zeros((self.item_num, ), np.float32)
+        for idx in range(self.item_num):
+            cur_item = dd.io.load(self.item_list[idx])
+            cur_img = cur_item["images"]
+            gray_list[idx] = np.mean(cur_img) / 255.0
+
+        pixel_mean = np.mean(gray_list)
+        return pixel_mean
+
+    def get_var_pixel(self):
+        pixel_arr = np.zeros((self.item_num, 256, 320), np.float32)
+
+        for idx in range(self.item_num):
+            cur_item = dd.io.load(self.item_list[idx])
+            cur_img = cur_item["images"]
+
+            var_img = cur_img[:, :, 0] / 255.0
+            pixel_arr[idx] = var_img
+        pixel_var = np.var(pixel_arr)
+        return pixel_var
+
     def overlayImgs(self, save_path):
         for idx in range(self.item_num):
             cur_item = dd.io.load(self.item_list[idx])

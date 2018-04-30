@@ -54,5 +54,5 @@ def check_all_annotations(xray_path):
 
 
 if __name__ == '__main__':
-    raw_xrays = "../../../data/DetKnee/img_annotations"
-    check_all_annotations(raw_xrays)
+    xraysBL = "../../../data/ImgsBL/XrayBLimg"
+    check_all_annotations(xraysBL)

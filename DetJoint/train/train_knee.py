@@ -22,11 +22,12 @@ def set_args():
     # Arguments settinge
     parser = argparse.ArgumentParser(description="Knee Bone Detection")
     parser.add_argument('--batch_size',      type=int,   default=8,            help='batch size.')
-    parser.add_argument('--maxepoch',        type=int,   default=160,          help='number of epochs to train')
+    parser.add_argument('--maxepoch',        type=int,   default=300,          help='number of epochs to train')
     parser.add_argument('--lr',              type=float, default=2.0e-4,       help='learning rate')
     parser.add_argument('--lr_decay',        type=float, default=0.8,          help='learning rate')
-    parser.add_argument('--lr_decay_epochs', type=list,  default=[60, 120],    help='decay the learning rate at this epoch')
-    parser.add_argument('--weight_decay',    type=float, default=0,            help='weight decay for training')
+    parser.add_argument('--lr_decay_epochs', type=list,  default=[60, 120, 180, 240],
+                        help='decay the learning rate at this epoch')
+    parser.add_argument('--weight_decay',    type=float, default=5.0e-4,       help='weight decay for training')
     parser.add_argument('--momentum',        type=float, default=0.9,          help='SGD momentum (default: 0.9)')
     parser.add_argument('--display_freq',    type=int,   default=10,           help='plot the results per batches')
     parser.add_argument('--save_freq',       type=int,   default=10,           help='how frequent to save the model')

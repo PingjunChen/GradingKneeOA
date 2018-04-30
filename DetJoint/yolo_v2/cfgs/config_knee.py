@@ -14,9 +14,11 @@ class config:
                                    [ 75.0,  72.3]])
         self.num_anchors = len(self.anchors)
 
-        # Image mean and std
-        self.rgb_mean = [0.5, 0.5, 0.5]
-        self.rgb_var = [0.5, 0.5, 0.5]
+        # # Image mean and std
+        # self.rgb_mean = [0.5, 0.5, 0.5]
+        # self.rgb_var = [0.5, 0.5, 0.5]
+        self.rgb_mean = [0.431, 0.431, 0.431]
+        self.rgb_var = [0.0872, 0.0872, 0.0872]
 
         # IOU scale
         self.iou_thresh = 0.6

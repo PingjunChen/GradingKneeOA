@@ -20,12 +20,12 @@ def set_args():
     parser.add_argument('--num_epoch',             type=int, default=12)
     parser.add_argument('--batch_size',            type=int, default=32)
     parser.add_argument('--weight_decay',          type=float, default=5.0e-4)
-    parser.add_argument('--data_dir',              type=str, default='../data/')
-    parser.add_argument('--model_dir',             type=str, default='../data/cls_models/cls5')
+    parser.add_argument('--data_dir',              type=str, default='../../data/ClsKLData/mannual_crop/')
+    parser.add_argument('--model_dir',             type=str, default='../../data/ClsKLData/models/')
     parser.add_argument('--pretrained',            type=bool, default=True)
     parser.add_argument('--cuda_id',               type=int, default=3)
     parser.add_argument('--optim',                 type=str, default='SGD')
-    parser.add_argument('--wloss',                 type=bool, default=True)
+    parser.add_argument('--wloss',                 type=bool, default=False)
 
     args = parser.parse_args()
     return args
