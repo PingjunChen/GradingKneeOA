@@ -21,7 +21,9 @@ if __name__ == '__main__':
     dim_array = np.stack([col_size_list, row_size_list], axis=1)
 
     # Clustered centered image dims
-    cluster_num = 3
+    cluster_num = 6
+    # cluster_num = 5
+
     kmeans = KMeans(n_clusters=cluster_num, random_state=0).fit(dim_array)
     centers = kmeans.cluster_centers_
     print("{} clustered centers:".format(cluster_num))

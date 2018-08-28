@@ -1,5 +1,5 @@
 #!/bin/bash
 
-python test_knee.py --device-id 2 \
-    --model-dir best_models \
-    --model-name det-epoch-160-0.000371.pth
+python test_knee.py --device-id 5 \
+    --model-dir best_models/1wd \
+    --model-name det-epoch-470-0.000076.pth

@@ -2,3 +2,4 @@
 ##2. Resize & Crop (resize_crop.py)
 ##3. Annotation (check_annotation.py & parse_region_annotate.py)
 ##4. Organize Knees (organize_knees.py find_anchors.py)
+##5. Use the splitting for 299 with the same as 224 (arrange299.py)

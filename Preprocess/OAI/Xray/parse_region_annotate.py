@@ -25,12 +25,11 @@ def parse_region_mat(mat_filepath):
         boxes = boxes[::-1]
     return boxes
 
-def crop_knee_joints(img_annotation_dir, knee_patches_dir, img_surfix='.png', annotate_surfix='_gt.mat'):
+def crop_knee_joints(img_annotation_dir, knee_patches_dir, patch_size=224, img_surfix='.png', annotate_surfix='_gt.mat', expand = 0.3):
     img_list = [img for img in os.listdir(img_annotation_dir) if img.endswith(img_surfix)]
     annotate_list = [annotation for annotation in os.listdir(img_annotation_dir)
                      if annotation.endswith(annotate_surfix)]
     assert len(img_list) == len(annotate_list), "Annotation not match with image"
-    expand = 0.3
     for ind, cur_img in enumerate(img_list):
         if (ind + 1) % 10 == 0:
             print("Processing {}/{} images".format(ind+1, len(img_list)))
@@ -58,7 +57,7 @@ def crop_knee_joints(img_annotation_dir, knee_patches_dir, img_surfix='.png', an
         y_end = 2048 if y_end > 2048 else y_end
 
         img_r = img[y_start:y_end, x_start:x_end]
-        img_r = imresize(img_r, (224, 224))
+        # img_r = imresize(img_r, (patch_size, patch_size))
         imsave(os.path.join(knee_patches_dir, os.path.splitext(cur_img)[0] + "R.png"), img_r)
 
         # Box1 as Left (expand 20%)
@@ -78,7 +77,7 @@ def crop_knee_joints(img_annotation_dir, knee_patches_dir, img_surfix='.png', an
         y_start = 0 if y_start < 0 else y_start
         y_end = 2048 if y_end > 2048 else y_end
         img_l = img[y_start:y_end, x_start:x_end]
-        img_l = imresize(img_l, (224, 224))        
+        # img_l = imresize(img_l, (patch_size, patch_size))
         imsave(os.path.join(knee_patches_dir, os.path.splitext(cur_img)[0] + "L.png"), img_l)
 
 
@@ -113,5 +112,8 @@ if __name__ == '__main__':
     # batch_parse(img_dir, annotation_dir, img_surfix='.png')
 
     img_annotation_dir = "../../../data/DetKneeData/img_annotations"
-    knee_patches_dir = "../../../data/ClsKLData/KneePatches"
-    crop_knee_joints(img_annotation_dir, knee_patches_dir)
+    # knee_patches_dir = "../../../data/ClsKLData/KneePatches224"
+    knee_patches_dir = "../../../data/ClsKLData/KneePatches299"
+    knee_patches_dir = "../../../data/ClsKLData/KneePatchesRaw"
+
+    crop_knee_joints(img_annotation_dir, knee_patches_dir, patch_size=299)

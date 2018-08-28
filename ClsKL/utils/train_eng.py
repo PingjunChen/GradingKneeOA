@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os, sys, pdb
+import shutil
 import torch
 from torch import nn, optim
 from torch.autograd import Variable
@@ -13,6 +14,9 @@ from eval_eng import eval_test
 def train_model(args, model, dset_loaders, dset_size):
     best_model, best_acc, best_num_epoch = None, .0, 0
     best_model_path = os.path.join(args.model_dir, args.best_model_name)
+    if os.path.exists(best_model_path):
+        shutil.rmtree(best_model_path)
+    os.makedirs(best_model_path)
 
     criterion = nn.CrossEntropyLoss()
     if args.optim == 'SGD':
@@ -26,8 +30,8 @@ def train_model(args, model, dset_loaders, dset_size):
                                   weight_decay=args.weight_decay, momentum=0.9)
 
     # print('-'*10+'Training'+'-'*10)
-    print('Device id:{} Initial lr:{}  Optimizer:{}  network:resnet{}  num_class:{}'.format(
-        args.cuda_id, args.lr, args.optim, args.depth, args.num_class))
+    print('Device id:{} Initial lr:{}  Optimizer:{}  network:{}  depth:{}  num_class:{}'.format(
+        args.cuda_id, args.lr, args.optim, args.net_type, args.depth, args.num_class))
 
     lr_scheduler = LRScheduler(args.lr, args.lr_decay_epoch)
     for epoch in range(args.num_epoch):
@@ -43,7 +47,7 @@ def train_model(args, model, dset_loaders, dset_size):
             running_loss, running_corrects = .0, .0
 
             for data in dset_loaders[phase]:
-                inputs, labels, paths = data
+                inputs, labels, _ = data
                 if args.cuda_id >= 0:
                     inputs, labels = Variable(inputs.cuda(args.cuda_id)), Variable(labels.cuda(args.cuda_id))
                 else:
@@ -51,6 +55,8 @@ def train_model(args, model, dset_loaders, dset_size):
 
                 optimizer.zero_grad()
                 outputs = model(inputs)
+                if isinstance(outputs, tuple):
+                    outputs = outputs[0]
                 _, preds = torch.max(outputs.data, 1)
                 if args.wloss == False:
                     loss = criterion(outputs, labels)
@@ -61,22 +67,15 @@ def train_model(args, model, dset_loaders, dset_size):
                     loss.backward()
                     optimizer.step()
 
-                running_loss += loss.data[0]
+                running_loss += loss.data
                 running_corrects += torch.sum(preds == labels.data)
 
-            epoch_loss = 1.0*running_loss/dset_size[phase]
-            epoch_acc = 1.0*running_corrects/dset_size[phase]
+            epoch_loss = 1.0*running_loss.cpu().tolist()/dset_size[phase]
+            epoch_acc = 1.0*running_corrects.cpu().tolist()/dset_size[phase]
             elapse_time = time.time() - since
             print("In {}, Number case:{} Loss:{:.4f} Acc:{:.4f} Time:{}".format(
                  phase, dset_size[phase], epoch_loss, epoch_acc, elapse_time))
 
-            # # save results for all epoches
-            # val_metric_str = str(epoch) + '-' + str(round(epoch_acc, 3))
-            # test_acc, test_mse = eval_test(args, model, dset_loaders, dset_size, "test")
-            # test_metric_str = "-" + str(round(test_acc, 3)) + "-" + str(round(test_mse, 3)) + ".pth"
-            # args.best_model_path = best_model_path + val_metric_str + test_metric_str
-            # torch.save(model.cpu(), args.best_model_path)
-            # model.cuda(args.cuda_id)
 
             if phase == "val" and epoch_acc >= best_acc:
                 best_acc = epoch_acc
@@ -84,7 +83,7 @@ def train_model(args, model, dset_loaders, dset_size):
                 val_metric_str = str(epoch) + '-' + str(round(best_acc, 3))
                 test_acc, test_mse = eval_test(args, model, dset_loaders, dset_size, "test")
                 test_metric_str = "-" + str(round(test_acc, 3)) + "-" + str(round(test_mse, 3)) + ".pth"
-                args.best_model_path = best_model_path + val_metric_str + test_metric_str
+                args.best_model_path = os.path.join(best_model_path, val_metric_str + test_metric_str)
                 torch.save(model.cpu(), args.best_model_path)
                 print("---On test_set: acc is {:.3f}, mse is {:.3f}".format(test_acc, test_mse))
                 model.cuda(args.cuda_id)

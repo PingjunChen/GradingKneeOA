@@ -8,7 +8,8 @@ from knee_sets import ImageFolder
 
 def data_load(args):
     pixel_mean, pixel_std = 0.66133188,  0.21229856
-    phases = ['train', 'val', 'test', 'automatic_test']
+    phases = ['train', 'val', 'test', 'auto_test']
+    # phases = ['train', 'val', 'test', 'auto_test']
     data_transform = {
         'train': transforms.Compose([
             transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3, hue=0.3),
@@ -23,7 +24,15 @@ def data_load(args):
             transforms.ToTensor(),
             transforms.Normalize([pixel_mean]*3, [pixel_std]*3)
         ]),
-        'automatic_test': transforms.Compose([
+        'auto_test': transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize([pixel_mean]*3, [pixel_std]*3)
+        ]),
+        'most_test': transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize([pixel_mean]*3, [pixel_std]*3)
+        ]),
+        'most_auto_test': transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize([pixel_mean]*3, [pixel_std]*3)
         ])

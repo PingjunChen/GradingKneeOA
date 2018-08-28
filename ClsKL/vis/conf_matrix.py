@@ -7,11 +7,11 @@ from plot_util import plot_confusion_matrix
 # Show Confusion Matrix of ResNet-34 Cross-Entropy on Mannual Cropped Knee Joints
 np.set_printoptions(precision=2)
 plt.figure()
-cnf_matrix = np.array([[545, 44, 49, 1, 0], [178, 36, 80, 2, 0], [123, 31, 276, 17, 0],
-                       [9, 3, 45, 162, 4], [0, 0, 1, 9, 41]])
+cnf_matrix = np.array([[556, 43, 39, 1, 0], [131, 52, 108, 5, 0], [41, 32, 335, 37, 2],
+                       [1, 1, 33, 167, 21], [0, 0, 1, 7, 43]])
 class_names=["0", "1", "2", "3", "4"]
 plot_confusion_matrix(cnf_matrix, classes=class_names,
-                      title='ResNet-34-CE on Manual')
+                      title='VGG-19-Ordinal on Manual')
 
 # # Show Confusion Matrix of Propsed Methods on Mannual Cropped Knee Joints
 # np.set_printoptions(precision=2)

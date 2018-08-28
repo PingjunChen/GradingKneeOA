@@ -12,7 +12,7 @@ from ..proj_utils.local_utils import overlay_bbox
 class Knee(data.Dataset):
     def __init__(self, data_root, mode, transform=None):
         self.data_root = data_root
-        assert mode in ["train", "val", "test"], "Unknown mode: {}".format(mode)
+        assert mode in ["train", "val", "test", "most"], "Unknown mode: {}".format(mode)
         self.mode = mode
         self.data_path = os.path.join(data_root, "H5", mode + "H5")
         self.item_list = glob.glob(os.path.join(self.data_path, "*.h5"))
@@ -24,10 +24,10 @@ class Knee(data.Dataset):
         # get bone info
         cur_item = dd.io.load(self.item_list[index])
         # get image
-        cur_img = cur_item["images"]
-
+        cur_img = cur_item["images"].astype(np.float32)
         if self.transform is not None:
             cur_img = self.transform(cur_img)
+
 
         cur_boxes = np.asarray(cur_item["gt_boxes"])
         cur_classes = np.asarray(cur_item["gt_classes"])

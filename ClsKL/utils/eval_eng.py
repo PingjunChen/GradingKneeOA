@@ -11,9 +11,34 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
 from eval_util import ordinal_mse
-from layer_util import extract_gap_layer
+from layer_util import extract_gap_layer, extract_vgg_fea_layer
 from layer_util import gen_cam_visual
-# from pydaily.plots import subplot
+from grad_cam import GradCam, show_cam_on_image
+
+
+def eval_test(args, model, dset_loaders, dset_size, phase="test"):
+    labels_all = [] * dset_size[phase]
+    preds_all = [] * dset_size[phase]
+
+    for data in dset_loaders[phase]:
+        inputs, labels, _ = data
+        inputs = Variable(inputs.cuda(args.cuda_id))
+        outputs = model(inputs)
+        _, preds = torch.max(outputs.data, 1)
+
+        labels_np = labels.numpy()
+        labels = labels_np.tolist()
+        labels_all.extend(labels)
+        preds_cpu = preds.cpu()
+        preds_np = preds_cpu.numpy()
+        preds = preds_np.tolist()
+        preds_all.extend(preds)
+
+    conf_matrix = confusion_matrix(labels_all, preds_all)
+    acc = 1.0*np.trace(conf_matrix)/np.sum(conf_matrix)
+    mse = ordinal_mse(conf_matrix)
+
+    return acc, mse
 
 
 def gen_vis_loc(args, phase, dset_loaders, dset_size, save_dir):
@@ -93,9 +118,10 @@ def eval_model(args, phase, dset_loaders, dset_size):
         outputs = model(inputs)
         _, preds = torch.max(outputs.data, 1)
 
-        # # retrieve gap layer
+        # retrieve gap layer
         # gaps = extract_gap_layer(model, inputs)
-        # feas_all.append(gaps.data.cpu().numpy())
+        vgg_feas = extract_vgg_fea_layer(model, inputs)
+        feas_all.append(vgg_feas.data.cpu().numpy())
 
         labels_np = labels.numpy()
         labels = labels_np.tolist()
@@ -115,4 +141,40 @@ def eval_model(args, phase, dset_loaders, dset_size):
 
     # # save features for tsne
     # feas_all = np.concatenate(feas_all)
-    # dd.io.save('feas1646_auto.h5', {'data': feas_all, 'target': labels_all})
+    # dd.io.save('feas1656_manual.h5', {'data': feas_all, 'target': labels_all})
+
+
+def gen_grad_cam(args, phase, dset_loaders, dset_size, save_dir):
+    model = torch.load(args.best_model_path)
+    model.cuda(args.cuda_id)
+    model.eval()
+
+    alpha = 0.6
+    beta  = 1 - alpha
+    pixel_mean, pixel_std = 0.66133188,  0.21229856
+
+    grad_cam = GradCam(model, target_layer_names = ["35"], use_cuda=1)
+    count, ttl_num = 0, dset_size[phase]
+    for data in dset_loaders[phase]:
+        inputs, labels, paths = data
+        count += len(paths)
+        print("Processing {}/{}".format(count, ttl_num))
+        inputs = Variable(inputs.cuda(args.cuda_id))
+
+        for input, label, path in zip(inputs, labels, paths):
+            input.unsqueeze_(0)
+            target_index = label.tolist()
+            mask = grad_cam(input, target_index)
+
+            input = input.permute(0, 2, 3, 1)
+            img = input.data.cpu().numpy()
+            img = (np.squeeze(img) * pixel_std) + pixel_mean
+
+            cam = (mask * 255.0).astype(np.uint8)
+            cam_rgb = cv2.applyColorMap(cam, cv2.COLORMAP_HSV)
+
+            img = (img * 255.0).astype(np.uint8)
+            img_cam = cv2.addWeighted(img, alpha, cam_rgb, beta, 0)
+
+            save_path = os.path.join(save_dir, str(target_index), path)
+            cv2.imwrite(save_path, img_cam)

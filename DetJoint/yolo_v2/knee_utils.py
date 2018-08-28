@@ -3,6 +3,7 @@
 import os, sys, pdb
 import numpy as np
 import cv2
+import deepdish as dd
 
 from .proj_utils.torch_utils import to_device
 from .utils.cython_yolo import yolo_to_bbox
@@ -41,6 +42,8 @@ def evaluate_det_cls(gt_boxes, gt_classes, pr_boxes, pr_classes, num=5, overlap_
     pred_matrix = np.zeros((num, num), dtype=np.int)
     overlap_list = []
 
+
+    box_num = 0
     for gt_box, gt_class in zip(gt_boxes, gt_classes):
         for pr_box, pr_class in zip(pr_boxes, pr_classes):
             cur_overlap = evaluate_box_JI(gt_box, pr_box)
@@ -49,8 +52,13 @@ def evaluate_det_cls(gt_boxes, gt_classes, pr_boxes, pr_classes, num=5, overlap_
                 pred_matrix[gt_class, pr_class] += 1
                 t_box_num += 1
                 overlap_list.append(cur_overlap)
+            if cur_overlap > 0.92 or (cur_overlap > 0.75 and cur_overlap < 0.78):
+                box_num += 1
 
-    return pred_matrix, t_box_num, all_box_num, overlap_list
+            if cur_overlap < 0.50 and cur_overlap > 0.4:
+                box_num = 2
+
+    return pred_matrix, t_box_num, all_box_num, overlap_list, box_num
 
 
 def overlay_bbox_iou(img, pred_boxes, gt_boxes, len=3):
@@ -123,43 +131,3 @@ def save_pred_box_coors(save_dir, gt_boxes, gt_classes, pr_boxes, img_name, over
                 bone_dict["coors"].append(pr_box*8)
                 bone_dict["classes"].append(gt_class)
     dd.io.save(os.path.join(save_dir, img_name+".h5"), bone_dict)
-
-
-# # Overlay bbox and associated class
-# def overlay_bbox_class(img, bboxes, classes=None, len=1, rgb=(255, 0, 0), pos="left"):
-#     for ind, bb in enumerate(bboxes):
-#     # for bb, clss in zip(bboxes, classes):
-#         # Overlay bbox
-#         x_min_, y_min_, x_max_, y_max_ = bb
-#         x_min_, y_min_, x_max_, y_max_ = int(x_min_),int( y_min_), int(x_max_), int(y_max_)
-#         img[:,:,0] = change_val(img[:,:,0], rgb[0], len, x_min_, y_min_, x_max_, y_max_)
-#         img[:,:,1] = change_val(img[:,:,1], rgb[1], len,  x_min_, y_min_, x_max_, y_max_)
-#         img[:,:,2] = change_val(img[:,:,2], rgb[2], len,  x_min_, y_min_, x_max_, y_max_)
-#
-#         if classes is not None:
-#             # Overly class
-#             font = cv2.FONT_HERSHEY_SIMPLEX
-#             if pos == "left":
-#                 col_mid = int(bb[0] + (bb[2] - bb[0]) / 3.0)
-#             elif pos == "right":
-#                 col_mid = int(bb[0] + (bb[2] - bb[0]) * 2 / 3.0)
-#             else:
-#                 raise ValueError("Unknow position parameter")
-#
-#             row_mid = int((bb[3] + bb[1]) / 2.0)
-#             # img = cv2.putText(img.copy(), str(clss), (col_mid, row_mid), font, 1, rgb, 2)
-#             img = cv2.putText(img.copy(), str(classes[ind]), (col_mid, row_mid), font, 1, rgb, 2)
-#
-#     return img
-#
-#
-# def overlay_gt_img(t_img, t_box, t_cls):
-#     np_img = tensor_to_img(t_img)
-#     bbox = t_box.squeeze_().numpy()
-#     clss = t_cls.squeeze_().numpy()
-#
-#     overlay_img = overlay_bbox_class(
-#         np_img, bbox, clss, len=6, rgb=(0, 255, 0), pos="left")
-#     overlay_img = overlay_img.astype(np.uint8)
-#
-#     return overlay_img

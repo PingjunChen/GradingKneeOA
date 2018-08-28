@@ -19,13 +19,15 @@ from yolo_v2.test_yolo import test_eng
 
 def set_args():
     parser = argparse.ArgumentParser(description = 'Testing code for Knee bone detection')
-    parser.add_argument('--device-id',       type=int, default=1)
+    parser.add_argument('--device-id',       type=int, default=0)
     parser.add_argument('--batch-size',      type=int, default=1)
     parser.add_argument('--model-dir',       type=str, default="best_models")
-    parser.add_argument('--model-name',      type=str, default="det-epoch-160-0.000371.pth")
+    parser.add_argument('--model-name',      type=str, default="det-epoch-500-0.000285.pth")
+    parser.add_argument('--whichset',        type=str, default="test")
     args = parser.parse_args()
 
     return args
+
 
 if  __name__ == '__main__':
     # Config arguments
@@ -41,7 +43,7 @@ if  __name__ == '__main__':
     input_transform = standard_transforms.Compose([
         standard_transforms.ToTensor(),
         standard_transforms.Normalize(cfg.rgb_mean, cfg.rgb_var)])
-    dataset = Knee(data_root, "test", transform=input_transform)
+    dataset = Knee(data_root, args.whichset, transform=input_transform)
     dataloader = data.DataLoader(dataset, batch_size=args.batch_size)
     # Set Darknet
     net = Darknet19(cfg)

@@ -40,7 +40,6 @@ def knee_kl_splitting(det_h5_dir, knee_cat_dir, knee_split_dir):
                 break
 
 
-
 if __name__ == "__main__":
     # knee_dict = "../../../data/ClsKLData/baselineKLG.json"
     # knee_patches_dir = "../../../data/ClsKLData/KneePatches"

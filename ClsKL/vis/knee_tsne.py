@@ -10,9 +10,10 @@ from yellowbrick.text import TSNEVisualizer
 
 
 # knee = dd.io.load('./data/feas1646_auto.h5')
-knee = dd.io.load('./data/feas1656_manual.h5')
+knee = dd.io.load('./data/tsne/vgg19_feas1656_manual.h5')
 X = knee["data"]
 y = knee["target"]
+
 n_samples, n_features = X.shape
 
 tsne = manifold.TSNE(n_components=2, perplexity=20, early_exaggeration=4.0, learning_rate=1000, n_iter=1000,
@@ -28,6 +29,7 @@ for i, c, label in zip(target_ids, colors, target_labels):
     newY = np.array([Y[ind] for ind, e in enumerate(y) if e==i])
     plt.scatter(newY[:, 0], newY[:, 1], c=c, label=label)
 plt.legend()
-plt.title("Mannual-Cropped Knee Joints")
-plt.tight_layout()
+plt.title("Features of VGG-19-Ordinal on Manual")
+plt.savefig("vgg19_tsne.pdf")
+# plt.tight_layout()
 plt.show()

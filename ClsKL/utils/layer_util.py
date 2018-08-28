@@ -3,9 +3,18 @@
 import os, sys, pdb
 
 import torch
+import torch.nn as nn
 import numpy as np
 from skimage import io, transform
 
+
+def extract_vgg_fea_layer(model, inputs):
+    x = model.features(inputs)
+    x = x.view(x.size(0), -1)
+    fea_extractor = nn.Sequential(*list(model.classifier.children())[:-1])
+    vgg_feas = fea_extractor(x)
+
+    return vgg_feas
 
 def extract_gap_layer(model, inputs):
     x = model.conv1(inputs)

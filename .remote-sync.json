@@ -1,8 +1,8 @@
 {
   "uploadOnSave": true,
-  "useAtomicWrites": false,
+  "useAtomicWrites": true,
   "deleteLocal": false,
-  "hostname": "10.244.13.34",
+  "hostname": "10.244.13.147",
   "target": "/home/pingjun/KneeAnalysis",
   "ignore": [
     ".remote-sync.json",

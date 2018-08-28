@@ -118,7 +118,7 @@ class ImageFolder(data.Dataset):
             target = self.target_transform(target)
 
         filename = os.path.basename(path)
-        
+
         return img, target, filename
 
     def __len__(self):
