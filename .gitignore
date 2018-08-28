@@ -1,7 +1,12 @@
 # Folders
+Preprocess/
 data/
 Data/
 DATA/
+Docs/
+docs/
+Doc/
+doc/
 .env/
 env/
 ENV/
@@ -9,7 +14,9 @@ __pycache__/
 
 
 # Files
-
+data
+doc
+.remote-sync.json
 
 # Files of certain surfix
 *.h5

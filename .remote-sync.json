@@ -1,0 +1,17 @@
+{
+  "uploadOnSave": true,
+  "useAtomicWrites": true,
+  "deleteLocal": false,
+  "hostname": "10.244.13.147",
+  "target": "/home/pingjun/KneeAnalysis",
+  "ignore": [
+    ".remote-sync.json",
+    ".git/**",
+    "data/**",
+    "data"
+  ],
+  "username": "pingjun",
+  "password": "!G0430@med",
+  "watch": [],
+  "transport": "scp"
+}

@@ -14,7 +14,7 @@ from .utils.cython_bbox import bbox_ious, anchor_intersections
 from .utils.cython_yolo import yolo_to_bbox
 from .proj_utils.model_utils import match_tensor
 from .proj_utils.torch_utils import to_device
-from .loss_util import set_weights
+from .loss_utils import set_weights
 
 
 def _process_batch(inputs, size_spec=None, cfg=None):

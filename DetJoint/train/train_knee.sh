@@ -1,4 +1,8 @@
 #!/bin/bash
 
-python train_knee.py --device-id 2 --model-name det_models00 &
-python train_knee.py --device-id 7 --model-name det_models01 &
+# model01
+python train_knee.py --device-id 4 \
+    --maxepoch 500 \
+    --weight_decay 5.0e-4 \
+    --batch_size 8 \
+    --model-name kneedet06wd

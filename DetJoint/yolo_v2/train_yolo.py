@@ -25,6 +25,7 @@ def train_eng(train_dataloader, val_dataloader, model_root, net, args):
     best_loss = 1.0e6 # given a high loss value
     for cur_epoch in range(1, args.maxepoch+1):
         train_loss, bbox_loss, iou_loss, cls_loss = 0., 0., 0., 0.
+        mini_batch_num = 0
         for cur_batch, data in enumerate(train_dataloader):
             cur_imgs, cur_boxes, cur_classes, cur_names = data
             # forward
@@ -48,22 +49,27 @@ def train_eng(train_dataloader, val_dataloader, model_root, net, args):
             loss.backward()
             optimizer.step()
 
+            mini_batch_num += 1
             # Print error information
             if (cur_batch + 1) % args.display_freq == 0:
                 num_samples = args.display_freq * args.batch_size
-                print("Training--Epoch {:>3}, total loss: {:.6f}, bbox_loss: {:.6f}, iou_loss: {:.6f}, cls_loss:{:.6f}".format(
-                    cur_epoch, train_loss/num_samples, bbox_loss/num_samples, iou_loss/num_samples, cls_loss/num_samples))
+                ttl_loss = train_loss/num_samples
+                bb_loss, iou_loss = bbox_loss/num_samples, iou_loss/num_samples
+                cls_loss = cls_loss/num_samples
+                print_str = "Train:Epoch:{:>3}/{:>3}, {:>3}/{:>3} total loss:{:.6f}, bbox_loss:{:.6f}, iou_loss:{:.6f}, cls_loss:{:.2f}"
+                print(print_str.format(cur_epoch, args.maxepoch, mini_batch_num, len(train_dataloader), ttl_loss, bb_loss, iou_loss, cls_loss))
                 train_loss, bbox_loss, iou_loss, cls_loss = 0, 0., 0., 0.
+
+        if cur_epoch % args.save_freq == 0:
+            # Validate current model's performance
+            best_loss = validate(val_dataloader, net, cur_epoch, model_root, best_loss, args)
+            net.train()
 
         # Adjust learing rate
         if cur_epoch in args.lr_decay_epochs:
             lr *= args.lr_decay
             optimizer = set_lr(optimizer, lr)
             print("Current lr is {}".format(lr))
-
-        if cur_epoch % args.save_freq == 0:
-            best_loss = validate(val_dataloader, net, cur_epoch, model_root, best_loss, args)
-            net.train()
 
 
 def validate(val_dataloader, net, cur_epoch, model_root, best_loss, args):
@@ -90,10 +96,10 @@ def validate(val_dataloader, net, cur_epoch, model_root, best_loss, args):
         iou_loss_val /= (ind + 1)
         cls_loss_val /= (ind + 1)
 
-        print("Validation--Epoch {:>3}, total loss: {:.6f}, bbox_loss: {:.6f}, iou_loss: {:.6f}, cls_loss:{:.6f}".format(
+        print("Validation--Epoch {:>2}, total loss: {:.5f}, bbox_loss: {:.5f}, iou_loss: {:.5f}, cls_loss:{:.2f}".format(
             cur_epoch, total_loss_val, bbox_loss_val, iou_loss_val, cls_loss_val))
 
-        weights_name = "kl_detrecog-epoch-" + str(cur_epoch).zfill(5) + "-" + "{:.6f}".format(best_loss) + '.pth'
+        weights_name = "det-epoch-" + str(cur_epoch).zfill(3) + "-" + "{:.6f}".format(best_loss) + '.pth'
         model_path = os.path.join(model_root, weights_name)
         torch.save(net.state_dict(), model_path)
         print('save weights at {}'.format(model_path))

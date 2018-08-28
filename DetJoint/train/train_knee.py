@@ -20,18 +20,19 @@ from yolo_v2.train_yolo import train_eng
 
 def set_args():
     # Arguments settinge
-    parser = argparse.ArgumentParser(description="Knee Bone Detection and Recognition")
+    parser = argparse.ArgumentParser(description="Knee Bone Detection")
     parser.add_argument('--batch_size',      type=int,   default=8,            help='batch size.')
-    parser.add_argument('--maxepoch',        type=int,   default=160,          help='number of epochs to train')
+    parser.add_argument('--maxepoch',        type=int,   default=500,          help='number of epochs to train')
     parser.add_argument('--lr',              type=float, default=2.0e-4,       help='learning rate')
     parser.add_argument('--lr_decay',        type=float, default=0.8,          help='learning rate')
-    parser.add_argument('--lr_decay_epochs', type=list,  default=[60, 120],    help='decay the learning rate at this epoch')
-    parser.add_argument('--weight_decay',    type=float, default=0,            help='weight decay for training')
+    parser.add_argument('--lr_decay_epochs', type=list,  default=[60, 120, 180, 240, 300, 360, 420, 480],
+                        help='decay the learning rate at this epoch')
+    parser.add_argument('--weight_decay',    type=float, default=0.0,          help='weight decay for training')
     parser.add_argument('--momentum',        type=float, default=0.9,          help='SGD momentum (default: 0.9)')
-    parser.add_argument('--display_freq',    type=int,   default=50,           help='plot the results every {} batches')
-    parser.add_argument('--save_freq',       type=int,   default=5,            help='how frequent to save the model')
-    parser.add_argument('--device-id',       type=int,   default=1,            help='which device')
-    parser.add_argument('--model-name',      type=str,   default='det_model')
+    parser.add_argument('--display_freq',    type=int,   default=10,           help='plot the results per batches')
+    parser.add_argument('--save_freq',       type=int,   default=10,           help='how frequent to save the model')
+    parser.add_argument('--device-id',       type=int,   default=0)
+    parser.add_argument('--model-name',      type=str,   default='kneedet')
     parser.add_argument('--seed',            type=int,   default=1234)
 
     args = parser.parse_args()
@@ -43,14 +44,17 @@ if  __name__ == '__main__':
     np.random.seed(args.seed)
 
     # Data and Model settings
-    data_root = "../data/"
-    model_root = os.path.join(data_root, "train_models", args.model_name)
+    data_root = "../../data/DetKneeData"
+    model_root = os.path.join(data_root, args.model_name)
+    mkdirs(model_root, erase=True)
+
+    # Replace as mean and std
     input_transform = standard_transforms.Compose([
         standard_transforms.ToTensor(),
-        standard_transforms.Normalize([0.5]*3, [0.5]*3)])
-    train_dataset = Knee(data_root, "training", transform=input_transform)
+        standard_transforms.Normalize(cfg.rgb_mean, cfg.rgb_var)])
+    train_dataset = Knee(data_root, "train", transform=input_transform)
     train_dataloader = data.DataLoader(train_dataset, batch_size=args.batch_size)
-    val_dataset = Knee(data_root, "validation", transform=input_transform)
+    val_dataset = Knee(data_root, "val", transform=input_transform)
     val_dataloader = data.DataLoader(val_dataset, batch_size=args.batch_size)
 
     # Set Darknet
