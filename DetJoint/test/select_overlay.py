@@ -12,7 +12,7 @@ from yolo_v2.knee_utils import overlay_bbox_iou
 from yolo_v2.proj_utils.local_utils import writeImg
 
 if  __name__ == '__main__':
-    selection = ["9559547", "9970801", "9023935", "9488966", "9994363", "9103811", "9313330", "9607454"]
+    # selection = ["9559547", "9970801", "9023935", "9488966", "9994363", "9103811", "9313330", "9607454"]
     select_json_path = "../../data/DetKneeData/results/selection.json"
     h5dir = "../../data/DetKneeData/H5/testH5"
 

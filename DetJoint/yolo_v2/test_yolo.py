@@ -32,9 +32,6 @@ def test_eng(dataloader, model_root, save_root, net, args, cfg):
     true_box_num, total_box_num = 0, 0
     all_overlap = []
 
-    # selection = ["9559547", "9970801", "9023935", "9488966", "9994363", "9103811", "9313330", "9607454"]
-    # select_dict = {}
-
     # import pdb; pdb.set_trace()
     for ind, data in enumerate(dataloader):
         cur_img, cur_boxes, cur_classes, cur_name = data

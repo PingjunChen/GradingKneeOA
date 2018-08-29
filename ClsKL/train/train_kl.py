@@ -31,7 +31,7 @@ def set_args():
     parser.add_argument('--pretrained',            type=bool, default=True)
     parser.add_argument('--cuda_id',               type=int, default=0)
     parser.add_argument('--optim',                 type=str, default='SGD')
-    parser.add_argument('--wloss',                 type=int, default=0)
+    parser.add_argument('--wloss',                 type=int, default=1)
 
     args = parser.parse_args()
     return args
