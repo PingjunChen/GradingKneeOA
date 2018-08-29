@@ -39,10 +39,10 @@ if __name__ == "__main__":
     # phase="automatic_test"
     phase="test"
 
-    # # Evaluate model
-    # print('---Evaluate model : {}--'.format(phase))
-    # eval_model(args, phase, dset_loaders, dset_size)
+    # Evaluate model
+    print('---Evaluate model : {}--'.format(phase))
+    eval_model(args, phase, dset_loaders, dset_size)
 
     # Generate saliency visulization
     # gen_vis_loc(args, phase, dset_loaders, dset_size, args.save_dir)
-    gen_grad_cam(args, phase, dset_loaders, dset_size, args.save_dir)
+    # gen_grad_cam(args, phase, dset_loaders, dset_size, args.save_dir)
