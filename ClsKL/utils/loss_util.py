@@ -33,7 +33,7 @@ def weighted_loss(outputs, labels, args):
         # weight matrix 04 (wm04)
         init_weights = np.array([[1, 3, 6, 7, 9],
                                  [4, 1, 4, 5, 7],
-                                 [6, 3, 1, 3, 5],
+                                 [6, 4, 1, 3, 5],
                                  [7, 5, 3, 1, 3],
                                  [9, 7, 5, 3, 1]], dtype=np.float)
 
