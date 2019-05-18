@@ -10,10 +10,10 @@ from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
-from eval_util import ordinal_mse
-from layer_util import extract_gap_layer, extract_vgg_fea_layer
-from layer_util import gen_cam_visual
-from grad_cam import GradCam, show_cam_on_image
+from .eval_util import ordinal_mse
+from .layer_util import extract_gap_layer, extract_vgg_fea_layer
+from .layer_util import gen_cam_visual
+from .grad_cam import GradCam, show_cam_on_image
 
 
 def eval_test(args, model, dset_loaders, dset_size, phase="test"):
@@ -22,7 +22,7 @@ def eval_test(args, model, dset_loaders, dset_size, phase="test"):
 
     for data in dset_loaders[phase]:
         inputs, labels, _ = data
-        inputs = Variable(inputs.cuda(args.cuda_id))
+        inputs = Variable(inputs.cuda())
         outputs = model(inputs)
         _, preds = torch.max(outputs.data, 1)
 
@@ -43,7 +43,7 @@ def eval_test(args, model, dset_loaders, dset_size, phase="test"):
 
 def gen_vis_loc(args, phase, dset_loaders, dset_size, save_dir):
     model = torch.load(args.best_model_path)
-    model.cuda(args.cuda_id)
+    model.cuda()
     model.eval()
 
     count, ttl_num = 0, dset_size[phase]
@@ -51,10 +51,7 @@ def gen_vis_loc(args, phase, dset_loaders, dset_size, save_dir):
         inputs, labels, paths = data
         count += len(paths)
         print("Processing {}/{}".format(count, ttl_num))
-        if args.cuda_id >= 0:
-            inputs = Variable(inputs.cuda(args.cuda_id))
-        else:
-            inputs = Variable(inputs)
+        inputs = Variable(inputs.cuda())
 
         # Prediction & CAMs
         preds, cams = gen_cam_visual(model, inputs)
@@ -99,9 +96,10 @@ def gen_vis_loc(args, phase, dset_loaders, dset_size, save_dir):
             plt.savefig(save_path)
             plt.close('all')
 
+
 def eval_model(args, phase, dset_loaders, dset_size):
     model = torch.load(args.best_model_path)
-    model.cuda(args.cuda_id)
+    model.cuda()
     model.eval()
 
     labels_all = [] * dset_size[phase]
@@ -110,10 +108,8 @@ def eval_model(args, phase, dset_loaders, dset_size):
 
     for data in dset_loaders[phase]:
         inputs, labels, paths = data
-        if args.cuda_id >= 0:
-            inputs = Variable(inputs.cuda(args.cuda_id))
-        else:
-            inputs = Variable(inputs)
+        inputs = Variable(inputs.cuda())
+
         # forward
         outputs = model(inputs)
         _, preds = torch.max(outputs.data, 1)
@@ -134,10 +130,9 @@ def eval_model(args, phase, dset_loaders, dset_size):
     conf_matrix = confusion_matrix(labels_all, preds_all)
     print("In {}: confusion matrix is:\n {}".format(phase, conf_matrix))
     acc = 1.0*np.trace(conf_matrix)/np.sum(conf_matrix)
-    print('Acc: {:.4f}  True/Total: {}/{}'.format(
-        acc, np.trace(conf_matrix), np.sum(conf_matrix)))
-    print('MSE: {:.4f}'.format(ordinal_mse(conf_matrix, poly_num=2)))
-    print('ABE: {:.4f}'.format(ordinal_mse(conf_matrix, poly_num=1)))
+    print('True/Total: {}/{}'.format(np.trace(conf_matrix), np.sum(conf_matrix)))
+    # print('MSE: {:.4f}'.format(ordinal_mse(conf_matrix, poly_num=2)))
+    print('Acc: {:.3f} ABE: {:.3f}'.format(acc, ordinal_mse(conf_matrix, poly_num=1)))
 
     # # save features for tsne
     # feas_all = np.concatenate(feas_all)
@@ -146,7 +141,7 @@ def eval_model(args, phase, dset_loaders, dset_size):
 
 def gen_grad_cam(args, phase, dset_loaders, dset_size, save_dir):
     model = torch.load(args.best_model_path)
-    model.cuda(args.cuda_id)
+    model.cuda()
     model.eval()
 
     alpha = 0.6
@@ -159,7 +154,7 @@ def gen_grad_cam(args, phase, dset_loaders, dset_size, save_dir):
         inputs, labels, paths = data
         count += len(paths)
         print("Processing {}/{}".format(count, ttl_num))
-        inputs = Variable(inputs.cuda(args.cuda_id))
+        inputs = Variable(inputs.cuda())
 
         for input, label, path in zip(inputs, labels, paths):
             input.unsqueeze_(0)

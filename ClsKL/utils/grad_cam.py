@@ -64,7 +64,6 @@ class GradCam:
         self.model = model
         # self.model.eval()
         self.cuda = use_cuda
-        # self.model = model.cuda()
 
         self.extractor = ModelOutputs(self.model, target_layer_names)
 

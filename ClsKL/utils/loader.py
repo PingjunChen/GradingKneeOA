@@ -3,7 +3,8 @@
 import os, sys, pdb
 import torch
 from torchvision import transforms
-from knee_sets import ImageFolder
+
+from .knee_sets import ImageFolder
 
 
 def data_load(args):

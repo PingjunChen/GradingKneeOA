@@ -11,9 +11,10 @@ from torch_util import LRScheduler
 from loss_util import weighted_loss
 from eval_eng import eval_test
 
+
 def train_model(args, model, dset_loaders, dset_size):
     best_model, best_acc, best_num_epoch = None, .0, 0
-    best_model_path = os.path.join(args.model_dir, args.best_model_name)
+    best_model_path = os.path.join(args.model_dir, args.best_model_name, str(args.session))
     if os.path.exists(best_model_path):
         shutil.rmtree(best_model_path)
     os.makedirs(best_model_path)
@@ -48,10 +49,7 @@ def train_model(args, model, dset_loaders, dset_size):
 
             for data in dset_loaders[phase]:
                 inputs, labels, _ = data
-                if args.cuda_id >= 0:
-                    inputs, labels = Variable(inputs.cuda(args.cuda_id)), Variable(labels.cuda(args.cuda_id))
-                else:
-                    inputs, labels = Variable(inputs), Variable(labels)
+                inputs, labels = Variable(inputs.cuda()), Variable(labels.cuda())
 
                 optimizer.zero_grad()
                 outputs = model(inputs)
@@ -77,7 +75,8 @@ def train_model(args, model, dset_loaders, dset_size):
                  phase, dset_size[phase], epoch_loss, epoch_acc, elapse_time))
 
 
-            if phase == "val" and epoch_acc >= best_acc:
+            # if phase == "val" and epoch_acc >= best_acc:
+            if phase == "val":
                 best_acc = epoch_acc
                 best_num_epoch = epoch
                 val_metric_str = str(epoch) + '-' + str(round(best_acc, 3))
@@ -86,6 +85,7 @@ def train_model(args, model, dset_loaders, dset_size):
                 args.best_model_path = os.path.join(best_model_path, val_metric_str + test_metric_str)
                 torch.save(model.cpu(), args.best_model_path)
                 print("---On test_set: acc is {:.3f}, mse is {:.3f}".format(test_acc, test_mse))
-                model.cuda(args.cuda_id)
+                model.cuda()
+
     print('='*80)
     print ('Validation best_acc: {}  best_num_epoch: {}'.format(best_acc, best_num_epoch))

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import os, sys, pdb
+import os, sys
 import numpy as np
 
 def build_cof_mat(num, poly_num=2):
