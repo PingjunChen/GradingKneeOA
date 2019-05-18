@@ -44,7 +44,6 @@ if __name__ == '__main__':
     import torch.backends.cudnn as cudnn
     cudnn.benchmark = True
 
-
     args.best_model_name = '{}-{}-{}-{}'.format(args.net_type, args.depth, args.optim, args.wloss)
     # import pdb; pdb.set_trace()
 

@@ -76,10 +76,10 @@ def train_model(args, model, dset_loaders, dset_size):
 
 
             # if phase == "val" and epoch_acc >= best_acc:
-            if phase == "val":
+            if phase == "val" and epoch_acc >= 0.630:
                 best_acc = epoch_acc
                 best_num_epoch = epoch
-                val_metric_str = str(epoch) + '-' + str(round(best_acc, 3))
+                val_metric_str = str(epoch).zfill(2) + '-' + str(round(best_acc, 3))
                 test_acc, test_mse = eval_test(args, model, dset_loaders, dset_size, "test")
                 test_metric_str = "-" + str(round(test_acc, 3)) + "-" + str(round(test_mse, 3)) + ".pth"
                 args.best_model_path = os.path.join(best_model_path, val_metric_str + test_metric_str)
