@@ -74,9 +74,7 @@ def train_model(args, model, dset_loaders, dset_size):
             print("In {}, Number case:{} Loss:{:.4f} Acc:{:.4f} Time:{}".format(
                  phase, dset_size[phase], epoch_loss, epoch_acc, elapse_time))
 
-
-            # if phase == "val" and epoch_acc >= best_acc:
-            if phase == "val" and epoch_acc >= 0.630:
+            if phase == "val" and epoch_acc >= best_acc:
                 best_acc = epoch_acc
                 best_num_epoch = epoch
                 val_metric_str = str(epoch).zfill(2) + '-' + str(round(best_acc, 3))
