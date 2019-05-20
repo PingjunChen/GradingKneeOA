@@ -136,7 +136,7 @@ def eval_model(args, phase, dset_loaders, dset_size):
     print('Acc: {:.3f} ABE: {:.3f}'.format(acc, ordinal_mse(conf_matrix, poly_num=1)))
 
     plt.imshow(conf_matrix, interpolation='nearest', cmap=plt.cm.Blues)
-    plt.title('Acc: {:.3f} ABE: {:.3f}'.format(acc, ordinal_mse(conf_matrix, poly_num=1)), fontsize=18)
+    plt.title('Acc: {:.3f} MAE: {:.3f}'.format(acc, ordinal_mse(conf_matrix, poly_num=1)), fontsize=18)
     classes = [0, 1, 2, 3, 4]
     tick_marks = np.arange(len(classes))
     plt.xticks(tick_marks, classes, rotation=45, fontsize=14)
@@ -146,7 +146,7 @@ def eval_model(args, phase, dset_loaders, dset_size):
                  horizontalalignment="center",
                  color="white" if conf_matrix[i, j] > conf_matrix.max() / 2. else "black")
     plt.tight_layout()
-    plt.savefig('cm01.svg')
+    plt.savefig('cm04.svg')
     # plt.show()
 
 
