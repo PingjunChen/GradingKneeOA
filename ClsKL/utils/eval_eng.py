@@ -135,19 +135,18 @@ def eval_model(args, phase, dset_loaders, dset_size):
     # print('MSE: {:.4f}'.format(ordinal_mse(conf_matrix, poly_num=2)))
     print('Acc: {:.3f} ABE: {:.3f}'.format(acc, ordinal_mse(conf_matrix, poly_num=1)))
 
-    plt.imshow(conf_matrix, interpolation='nearest', cmap=plt.cm.Blues)
-    plt.title('Acc: {:.3f} MAE: {:.3f}'.format(acc, ordinal_mse(conf_matrix, poly_num=1)), fontsize=18)
-    classes = [0, 1, 2, 3, 4]
-    tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, rotation=45, fontsize=14)
-    plt.yticks(tick_marks, classes, fontsize=14)
-    for i, j in itertools.product(range(conf_matrix.shape[0]), range(conf_matrix.shape[1])):
-        plt.text(j, i, format(conf_matrix[i, j], 'd'),
-                 horizontalalignment="center",
-                 color="white" if conf_matrix[i, j] > conf_matrix.max() / 2. else "black")
-    plt.tight_layout()
-    plt.savefig('cm04.svg')
-    # plt.show()
+    # plt.imshow(conf_matrix, interpolation='nearest', cmap=plt.cm.Blues)
+    # plt.title('Acc: {:.3f} MAE: {:.3f}'.format(acc, ordinal_mse(conf_matrix, poly_num=1)), fontsize=18)
+    # classes = [0, 1, 2, 3, 4]
+    # tick_marks = np.arange(len(classes))
+    # plt.xticks(tick_marks, classes, rotation=45, fontsize=14)
+    # plt.yticks(tick_marks, classes, fontsize=14)
+    # for i, j in itertools.product(range(conf_matrix.shape[0]), range(conf_matrix.shape[1])):
+    #     plt.text(j, i, format(conf_matrix[i, j], 'd'),
+    #              horizontalalignment="center",
+    #              color="white" if conf_matrix[i, j] > conf_matrix.max() / 2. else "black")
+    # plt.tight_layout()
+    # plt.savefig('cm04.svg')
 
 
 
