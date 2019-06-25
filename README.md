@@ -12,7 +12,7 @@ Knee joint detection (DetJoint) and KL grading (ClsKL) training/testing datasets
 
 
 ## Citation
-Please consider `cite` the paper if you use this code for your research.
+Please consider `cite` the paper if you use the code or data for your research.
 ```
 @article{chen2019fully,
   title={Fully Automatic Knee Osteoarthritis Severity Grading Using Deep Neural Networks with a Novel Ordinal Loss},
