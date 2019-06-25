@@ -17,8 +17,11 @@ Please consider `cite` the paper if you use this code for your research.
 @article{chen2019fully,
   title={Fully Automatic Knee Osteoarthritis Severity Grading Using Deep Neural Networks with a Novel Ordinal Loss},
   author={Chen, Pingjun and Gao, Linlin and Shi, Xiaoshuang and Allen, Kyle and Yang Lin},
-  journal={Computerized Medical Imaging and Graphics},
+  journal={Computerized Medical Imaging and Graphics},,
+  volume={75},
+  pages={84--92},
   year={2019},
+  doi={https://doi.org/10.1016/j.compmedimag.2019.06.002},
   publisher={Elsevier}  
 }
 ```
