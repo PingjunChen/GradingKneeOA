@@ -1,5 +1,9 @@
 #  Knee Osteoarthritis Analysis
 
+#### Pipeline of knee osteoarthritis grading pipeline, which includes knee joints detection and knee OA grading.
+
+![klg_pipeline](klg_pipeline.png)
+
 ### DetJoint
 - Detecting two knee joints in X-ray images using a customized YOLOv2 model.
 
