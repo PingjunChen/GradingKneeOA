@@ -12,7 +12,7 @@
 
 
 ## Data & Models
-Knee joint detection (DetJoint) and KL grading (ClsKL) training/testing datasets, as well as best models, can be downloaded from [KneeXrayData](https://figshare.com/articles/KneeXrayData/8139545), around 7G.
+Knee joint detection (DetJoint) and KL grading (ClsKL) training/testing datasets, as well as best models, can be downloaded from [KneeXrayData](https://data.mendeley.com/datasets/56rmx5bjcr/1), around 7G.
 
 
 ## Citation
